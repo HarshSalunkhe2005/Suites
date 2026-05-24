@@ -44,7 +44,10 @@ export default function ImageConverter() {
       await new Promise(resolve => setTimeout(resolve, 100)); // UI update delay
       const img = await readImageFile(file);
       // use scale 1 to keep original dimensions, convert format
-      const dataUrl = resizeImage(img, 1, targetFormat, quality);
+      // Map format string to correct mime type for canvas
+      const mimeType = targetFormat === 'jpg' ? 'jpeg' : targetFormat;
+      const dataUrl = resizeImage(img, 1, mimeType, quality);
+      
       downloadDataUrl(dataUrl, `suites-converted-${file.name.split('.')[0]}.${targetFormat}`);
     } catch (err) {
       console.error(err);
@@ -88,13 +91,14 @@ export default function ImageConverter() {
             <div className="control-group">
               <label>Convert To:</label>
               <select className="dropdown" value={targetFormat} onChange={(e) => setTargetFormat(e.target.value)}>
-                <option value="jpeg">JPG</option>
+                <option value="jpg">JPG</option>
+                <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
                 <option value="webp">WEBP</option>
               </select>
             </div>
             
-            {(targetFormat === 'jpeg' || targetFormat === 'webp') && (
+            {(targetFormat === 'jpg' || targetFormat === 'jpeg' || targetFormat === 'webp') && (
               <div className="control-group">
                 <label>Quality:</label>
                 <select className="dropdown" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))}>

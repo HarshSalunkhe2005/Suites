@@ -5,30 +5,55 @@
 }
 
 .header {
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 1.5rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  background-color: #fff;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid #eaeaea;
+  z-index: 100;
+  display: flex;
 }
 
 .header-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
+  width: 100%;
 }
 
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  margin-right: 2rem;
 }
 
 .logo {
-  color: var(--primary);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: -1px;
+  margin: 0;
+  color: #333;
+  letter-spacing: -0.5px;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--primary);
 }
 
 .badge {
@@ -43,7 +68,7 @@
 
 .main-content {
   flex-grow: 1;
-  padding-top: 4rem;
+  padding-top: 80px; /* Accounts for fixed 60px header + 20px space */
   padding-bottom: 4rem;
 }
 
