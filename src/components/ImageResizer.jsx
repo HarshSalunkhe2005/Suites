@@ -74,13 +74,12 @@ export default function ImageResizer() {
             <div className="control-group">
               <label>Output Format:</label>
               <select className="dropdown" value={format} onChange={(e) => setFormat(e.target.value)}>
-                <option value="jpeg">JPG</option>
+                <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
-                <option value="webp">WebP</option>
               </select>
             </div>
             
-            {(format === 'jpeg' || format === 'webp') && (
+            {format === 'jpeg' && (
               <div className="control-group">
                 <label>Compression Quality:</label>
                 <select className="dropdown" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))}>
