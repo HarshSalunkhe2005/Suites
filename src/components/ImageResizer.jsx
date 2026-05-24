@@ -1,12 +1,15 @@
 import { useState, useRef } from 'react';
-import { readImageFile, resizeImage, downloadDataUrl } from '../utils/fileHelpers';
+import { readImageFile, resizeImage, compressToTargetSize, downloadDataUrl } from '../utils/fileHelpers';
 import './ImageResizer.css';
 
 export default function ImageResizer() {
   const [file, setFile] = useState(null);
   const [format, setFormat] = useState('jpeg');
+  const [mode, setMode] = useState('scale'); // 'scale' or 'target'
   const [scale, setScale] = useState(0.5);
   const [quality, setQuality] = useState(0.8);
+  const [targetKB, setTargetKB] = useState(500);
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDrop = (e) => {
@@ -18,13 +21,26 @@ export default function ImageResizer() {
 
   const handleProcess = async () => {
     if (!file) return;
+    setIsProcessing(true);
     try {
+      // Add a slight delay to allow UI to update to 'Processing...'
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const img = await readImageFile(file);
-      const dataUrl = resizeImage(img, scale, format, quality);
+      let dataUrl;
+      
+      if (mode === 'target' && (format === 'jpeg' || format === 'webp')) {
+        dataUrl = await compressToTargetSize(img, targetKB, format);
+      } else {
+        dataUrl = resizeImage(img, scale, format, quality);
+      }
+      
       downloadDataUrl(dataUrl, `suites-${file.name.split('.')[0]}.${format}`);
     } catch (err) {
       console.error("Error processing image:", err);
       alert("Failed to process image.");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -62,39 +78,64 @@ export default function ImageResizer() {
           
           <div className="controls">
             <div className="control-group">
-              <label>Scale dimension:</label>
-              <select className="dropdown" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))}>
-                <option value={0.25}>25%</option>
-                <option value={0.5}>50%</option>
-                <option value={0.75}>75%</option>
-                <option value={1}>100%</option>
-              </select>
-            </div>
-            
-            <div className="control-group">
               <label>Output Format:</label>
               <select className="dropdown" value={format} onChange={(e) => setFormat(e.target.value)}>
                 <option value="jpeg">JPG</option>
                 <option value="png">PNG</option>
               </select>
             </div>
+
+            <div className="control-group">
+              <label>Mode:</label>
+              <select className="dropdown" value={mode} onChange={(e) => setMode(e.target.value)}>
+                <option value="scale">Standard Scale</option>
+                <option value="target" disabled={format === 'png'}>Target File Size (KB)</option>
+              </select>
+            </div>
             
-            {format === 'jpeg' && (
+            {mode === 'scale' ? (
+              <>
+                <div className="control-group">
+                  <label>Scale dimension:</label>
+                  <select className="dropdown" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))}>
+                    <option value={0.25}>25%</option>
+                    <option value={0.5}>50%</option>
+                    <option value={0.75}>75%</option>
+                    <option value={1}>100%</option>
+                  </select>
+                </div>
+                
+                {format === 'jpeg' && (
+                  <div className="control-group">
+                    <label>Quality:</label>
+                    <select className="dropdown" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))}>
+                      <option value={0.3}>Low (30%)</option>
+                      <option value={0.6}>Medium (60%)</option>
+                      <option value={0.8}>High (80%)</option>
+                      <option value={1.0}>Max (100%)</option>
+                    </select>
+                  </div>
+                )}
+              </>
+            ) : (
               <div className="control-group">
-                <label>Compression Quality:</label>
-                <select className="dropdown" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))}>
-                  <option value={0.3}>Low (30%)</option>
-                  <option value={0.6}>Medium (60%)</option>
-                  <option value={0.8}>High (80%)</option>
-                  <option value={1.0}>Maximum (100%)</option>
-                </select>
+                <label>Target Size (KB):</label>
+                <input 
+                  type="number" 
+                  className="dropdown" 
+                  value={targetKB} 
+                  onChange={(e) => setTargetKB(parseInt(e.target.value) || 500)}
+                  min="10"
+                />
               </div>
             )}
           </div>
           
           <div className="actions">
             <button className="btn btn-secondary" onClick={() => setFile(null)}>Cancel</button>
-            <button className="btn btn-primary" onClick={handleProcess}>Resize & Download</button>
+            <button className="btn btn-primary" onClick={handleProcess} disabled={isProcessing}>
+              {isProcessing ? 'Processing...' : 'Resize & Download'}
+            </button>
           </div>
         </div>
       )}

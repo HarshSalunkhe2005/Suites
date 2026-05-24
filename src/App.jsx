@@ -1,4 +1,6 @@
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
+import Dashboard from './pages/Dashboard';
 import ImageResizer from './components/ImageResizer';
 
 function App() {
@@ -6,15 +8,18 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-content">
-          <div className="logo-section">
+          <Link to="/" className="logo-section" style={{textDecoration: 'none'}}>
             <h1 className="logo">Suites.</h1>
-          </div>
+          </Link>
         </div>
       </header>
       
       <main className="main-content">
         <div className="container">
-          <ImageResizer />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/compress" element={<ImageResizer />} />
+          </Routes>
         </div>
       </main>
       
