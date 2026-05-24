@@ -86,13 +86,13 @@ export default function ImageCropper() {
             <strong>Selected:</strong> {file.name}
           </div>
           
-          <div className="crop-container" style={{ maxWidth: '100%', overflow: 'auto', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center' }}>
+          <div className="crop-container" style={{ textAlign: 'center', backgroundColor: '#f0f0f0', padding: '1rem', borderRadius: '8px' }}>
             {imgSrc && (
               <ReactCrop crop={crop} onChange={c => setCrop(c)} onComplete={c => setCompletedCrop(c)}>
                 <img 
                   ref={imgRef} 
                   src={imgSrc} 
-                  style={{ maxHeight: '60vh', objectFit: 'contain' }} 
+                  style={{ maxWidth: '100%', maxHeight: '60vh', display: 'block', margin: '0 auto' }} 
                   alt="Crop preview" 
                 />
               </ReactCrop>

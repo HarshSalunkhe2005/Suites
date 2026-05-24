@@ -25,14 +25,6 @@ export default function Dashboard() {
           <h3>Crop Image</h3>
           <p>Visual cropping tool to cut out precisely what you need.</p>
         </Link>
-        
-        <Link to="/watermark" className="tool-card">
-          <div className="tool-icon watermark-icon">
-             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><text x="12" y="16" textAnchor="middle" fontSize="12" fontWeight="bold">©</text></svg>
-          </div>
-          <h3>Watermark Image</h3>
-          <p>Stamp your images with custom text overlays.</p>
-        </Link>
       </div>
     </div>
   );

@@ -3,7 +3,6 @@ import './App.css';
 import Dashboard from './pages/Dashboard';
 import ImageResizer from './components/ImageResizer';
 import ImageCropper from './components/ImageCropper';
-import ImageWatermark from './components/ImageWatermark';
 
 function App() {
   return (
@@ -22,7 +21,6 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/compress" element={<ImageResizer />} />
             <Route path="/crop" element={<ImageCropper />} />
-            <Route path="/watermark" element={<ImageWatermark />} />
           </Routes>
         </div>
       </main>
