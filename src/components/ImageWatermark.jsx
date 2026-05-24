@@ -13,6 +13,8 @@ export default function ImageWatermark() {
   const fileInputRef = useRef(null);
   const imgRef = useRef(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleDrop = async (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
@@ -21,10 +23,18 @@ export default function ImageWatermark() {
   };
 
   const loadFile = async (selectedFile) => {
-    setFile(selectedFile);
-    const img = await readImageFile(selectedFile);
-    imgRef.current = img;
-    updatePreview();
+    setIsLoading(true);
+    try {
+      const img = await readImageFile(selectedFile);
+      imgRef.current = img;
+      setFile(selectedFile);
+      updatePreview();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load image");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const applyWatermark = (canvas, ctx, img) => {
@@ -109,11 +119,11 @@ export default function ImageWatermark() {
           className="dropzone"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current.click()}
+          onClick={() => !isLoading && fileInputRef.current.click()}
         >
           <input type="file" accept="image/*" hidden ref={fileInputRef} onChange={(e) => loadFile(e.target.files[0])} />
           <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <p>Drag & Drop an image here or click to select</p>
+          <p>{isLoading ? 'Loading Image...' : 'Drag & Drop an image here or click to select'}</p>
         </div>
       ) : (
         <div className="workspace">
