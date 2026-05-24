@@ -3,6 +3,7 @@ import './App.css';
 import Dashboard from './pages/Dashboard';
 import ImageResizer from './components/ImageResizer';
 import ImageCropper from './components/ImageCropper';
+import ImageConverter from './components/ImageConverter';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/compress" element={<ImageResizer />} />
             <Route path="/crop" element={<ImageCropper />} />
+            <Route path="/convert" element={<ImageConverter />} />
           </Routes>
         </div>
       </main>
