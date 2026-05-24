@@ -1,0 +1,57 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.badge {
+  background-color: #E0F2FE;
+  color: var(--primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
+}
