@@ -74,7 +74,7 @@ export default function ImageResizer() {
             <div className="control-group">
               <label>Output Format:</label>
               <select className="dropdown" value={format} onChange={(e) => setFormat(e.target.value)}>
-                <option value="jpeg">JPEG</option>
+                <option value="jpeg">JPG</option>
                 <option value="png">PNG</option>
               </select>
             </div>

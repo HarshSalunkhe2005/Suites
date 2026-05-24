@@ -5,10 +5,9 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="container header-content">
+        <div className="header-content">
           <div className="logo-section">
             <h1 className="logo">Suites.</h1>
-            <span className="badge">PWA Local</span>
           </div>
         </div>
       </header>
