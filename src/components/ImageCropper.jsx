@@ -13,16 +13,25 @@ export default function ImageCropper() {
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+
+  const handleFile = (selectedFile) => {
+    if (!selectedFile) return;
+    if (!selectedFile.type.startsWith('image/')) {
+      alert("Security: Invalid file type. Please drop a valid image file.");
+      return;
+    }
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      alert("Security: File is too large. Maximum allowed size is 25MB.");
+      return;
+    }
+    loadFile(selectedFile);
+  };
 
   const handleDrop = async (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (!droppedFile.type.startsWith('image/')) {
-        alert("Security: Invalid file type. Please drop a valid image file.");
-        return;
-      }
-      loadFile(droppedFile);
+      handleFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -81,7 +90,7 @@ export default function ImageCropper() {
           onDrop={handleDrop}
           onClick={() => !isLoading && fileInputRef.current.click()}
         >
-          <input type="file" accept="image/*" hidden ref={fileInputRef} onChange={(e) => loadFile(e.target.files[0])} />
+          <input type="file" accept="image/*" hidden ref={fileInputRef} onChange={(e) => handleFile(e.target.files[0])} />
           <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           <p>{isLoading ? 'Loading Image...' : 'Drag & Drop an image here or click to select'}</p>
         </div>

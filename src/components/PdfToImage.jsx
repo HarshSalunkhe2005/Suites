@@ -13,16 +13,25 @@ export default function PdfToImage() {
   const [progress, setProgress] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const fileInputRef = useRef(null);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+  const handleFile = (selectedFile) => {
+    if (!selectedFile) return;
+    if (selectedFile.type !== 'application/pdf') {
+      alert("Security: Invalid file type. Please upload a valid PDF file.");
+      return;
+    }
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      alert("Security: File is too large. Maximum allowed size is 50MB.");
+      return;
+    }
+    setFile(selectedFile);
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.type !== 'application/pdf') {
-        alert("Security: Invalid file type. Please drop a valid PDF file.");
-        return;
-      }
-      setFile(droppedFile);
+      handleFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -97,7 +106,7 @@ export default function PdfToImage() {
           onDrop={handleDrop}
           onClick={() => fileInputRef.current.click()}
         >
-          <input type="file" accept="application/pdf" hidden ref={fileInputRef} onChange={(e) => setFile(e.target.files[0])} />
+          <input type="file" accept="application/pdf" hidden ref={fileInputRef} onChange={(e) => handleFile(e.target.files[0])} />
           <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           <p>Drag & Drop a PDF here or click to select</p>
         </div>

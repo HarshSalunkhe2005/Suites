@@ -12,15 +12,25 @@ export default function ImageResizer() {
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef(null);
 
+  const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+
+  const handleFile = (selectedFile) => {
+    if (!selectedFile) return;
+    if (!selectedFile.type.startsWith('image/')) {
+      alert("Security: Invalid file type. Please drop a valid image file.");
+      return;
+    }
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      alert("Security: File is too large. Maximum allowed size is 25MB.");
+      return;
+    }
+    setFile(selectedFile);
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (!droppedFile.type.startsWith('image/')) {
-        alert("Security: Invalid file type. Please drop a valid image file.");
-        return;
-      }
-      setFile(droppedFile);
+      handleFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -66,7 +76,7 @@ export default function ImageResizer() {
             accept="image/*" 
             hidden 
             ref={fileInputRef} 
-            onChange={(e) => setFile(e.target.files[0])} 
+            onChange={(e) => handleFile(e.target.files[0])} 
           />
           <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
