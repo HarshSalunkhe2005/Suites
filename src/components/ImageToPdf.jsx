@@ -11,15 +11,27 @@ export default function ImageToPdf() {
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const newFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-      setFiles(prev => [...prev, ...newFiles]);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      const validFiles = droppedFiles.filter(f => f.type.startsWith('image/'));
+      if (validFiles.length < droppedFiles.length) {
+        alert("Security: Some files were ignored. Please drop only image files.");
+      }
+      if (validFiles.length > 0) {
+        setFiles(prev => [...prev, ...validFiles]);
+      }
     }
   };
 
   const handleSelectFiles = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
-      setFiles(prev => [...prev, ...newFiles]);
+      const droppedFiles = Array.from(e.target.files);
+      const validFiles = droppedFiles.filter(f => f.type.startsWith('image/'));
+      if (validFiles.length < droppedFiles.length) {
+        alert("Security: Some files were ignored. Please select only image files.");
+      }
+      if (validFiles.length > 0) {
+        setFiles(prev => [...prev, ...validFiles]);
+      }
     }
   };
 

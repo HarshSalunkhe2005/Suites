@@ -15,7 +15,12 @@ export default function ImageResizer() {
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
+      const droppedFile = e.dataTransfer.files[0];
+      if (!droppedFile.type.startsWith('image/')) {
+        alert("Security: Invalid file type. Please drop a valid image file.");
+        return;
+      }
+      setFile(droppedFile);
     }
   };
 
