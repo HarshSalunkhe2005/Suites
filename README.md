@@ -5,7 +5,7 @@
 **Suites.** is a blazing-fast, strictly offline-first toolkit for manipulating Images and PDFs directly in your browser. 
 No data ever leaves your device—everything is processed locally using WebAssembly and Canvas APIs.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/your-netlify-badge-id/deploy-status)](https://suites-app.netlify.app)
+[![Netlify Status](https://suites-sit.netlify.app/)
 
 ## Features
 
