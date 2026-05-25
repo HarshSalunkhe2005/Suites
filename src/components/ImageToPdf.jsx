@@ -6,6 +6,7 @@ import './ImageResizer.css';
 export default function ImageToPdf() {
   const [files, setFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [outputName, setOutputName] = useState("");
   const fileInputRef = useRef(null);
   const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
 
@@ -82,9 +83,11 @@ export default function ImageToPdf() {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       
+      const finalName = outputName.trim() ? `${outputName.trim()}.pdf` : `suites-merged-${Date.now()}.pdf`;
+      
       const a = document.createElement('a');
       a.href = url;
-      a.download = `suites-merged-${Date.now()}.pdf`;
+      a.download = finalName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -130,6 +133,17 @@ export default function ImageToPdf() {
             ))}
           </div>
           
+          <div className="options-panel" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Custom PDF Name (Optional):</label>
+            <input 
+              type="text" 
+              placeholder="e.g. My_Document" 
+              value={outputName}
+              onChange={(e) => setOutputName(e.target.value)}
+              style={{ padding: '0.5rem', width: '100%', maxWidth: '300px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+          </div>
+
           <div className="actions">
             <button className="btn btn-secondary" onClick={() => setFiles([])}>Clear All</button>
             <button className="btn btn-primary" onClick={handleProcess} disabled={isProcessing}>

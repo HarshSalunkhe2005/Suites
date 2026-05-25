@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-import JSZip from 'jszip';
 import './ImageResizer.css';
 
 // Set up the PDF.js worker
@@ -12,6 +11,7 @@ export default function PdfToImage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [outputName, setOutputName] = useState("");
   const fileInputRef = useRef(null);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
@@ -45,7 +45,7 @@ export default function PdfToImage() {
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       setTotalPages(pdf.numPages);
       
-      const zip = new JSZip();
+      const baseOutput = outputName.trim() ? outputName.trim() : 'suites-pdf-page';
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
@@ -65,24 +65,20 @@ export default function PdfToImage() {
         
         // Convert canvas to JPG
         const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-        const base64Data = dataUrl.replace(/^data:image\/jpeg;base64,/, "");
         
-        // Add to zip
-        zip.file(`page_${i}.jpg`, base64Data, {base64: true});
+        // Direct Download
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `${baseOutput}_${i}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Slight delay so the browser can process multiple downloads without choking
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
         setProgress(i);
       }
-
-      // Generate Zip and Download
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
-      const url = URL.createObjectURL(zipBlob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `suites-pdf-images-${Date.now()}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
 
     } catch (err) {
       console.error(err);
@@ -97,7 +93,7 @@ export default function PdfToImage() {
   return (
     <div className="card image-resizer">
       <h2>PDF to Image</h2>
-      <p className="subtitle">Convert every page of a PDF into high-quality JPGs, packaged in a ZIP file.</p>
+      <p className="subtitle">Convert every page of a PDF into high-quality JPGs, downloading them directly.</p>
       
       {!file ? (
         <div 
@@ -123,15 +119,26 @@ export default function PdfToImage() {
             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
               <progress value={progress} max={totalPages} style={{ width: '100%', height: '20px' }}></progress>
               <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--primary)' }}>
-                Processing page {progress} of {totalPages}...
+                Downloading page {progress} of {totalPages}...
               </div>
             </div>
           )}
           
+          <div className="options-panel" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Custom Output Name (Optional):</label>
+            <input 
+              type="text" 
+              placeholder="e.g. My_Image" 
+              value={outputName}
+              onChange={(e) => setOutputName(e.target.value)}
+              style={{ padding: '0.5rem', width: '100%', maxWidth: '300px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+          </div>
+
           <div className="actions">
             <button className="btn btn-secondary" onClick={() => !isProcessing && setFile(null)} disabled={isProcessing}>Cancel</button>
             <button className="btn btn-primary" onClick={handleProcess} disabled={isProcessing}>
-              {isProcessing ? 'Zipping Images...' : 'Convert to JPG & Download'}
+              {isProcessing ? 'Extracting Images...' : 'Convert & Download Images'}
             </button>
           </div>
         </div>
