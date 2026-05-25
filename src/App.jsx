@@ -4,6 +4,8 @@ import Dashboard from './pages/Dashboard';
 import ImageResizer from './components/ImageResizer';
 import ImageCropper from './components/ImageCropper';
 import ImageConverter from './components/ImageConverter';
+import ImageToPdf from './components/ImageToPdf';
+import PdfToImage from './components/PdfToImage';
 
 function App() {
   return (
@@ -21,9 +23,8 @@ function App() {
             <Link to="/compress" className="nav-link">Compress IMAGE</Link>
             <Link to="/crop" className="nav-link">Crop IMAGE</Link>
             <Link to="/convert" className="nav-link">Convert to JPG</Link>
-            {/* PDF links will be uncommented once built */}
-            {/* <Link to="/img-to-pdf" className="nav-link">IMG to PDF</Link> */}
-            {/* <Link to="/pdf-to-img" className="nav-link">PDF to IMG</Link> */}
+            <Link to="/img-to-pdf" className="nav-link">IMG to PDF</Link>
+            <Link to="/pdf-to-img" className="nav-link">PDF to IMG</Link>
           </nav>
         </div>
       </header>
@@ -35,6 +36,8 @@ function App() {
             <Route path="/compress" element={<ImageResizer />} />
             <Route path="/crop" element={<ImageCropper />} />
             <Route path="/convert" element={<ImageConverter />} />
+            <Route path="/img-to-pdf" element={<ImageToPdf />} />
+            <Route path="/pdf-to-img" element={<PdfToImage />} />
           </Routes>
         </div>
       </main>

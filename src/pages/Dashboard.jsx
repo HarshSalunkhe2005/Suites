@@ -33,6 +33,22 @@ export default function Dashboard() {
           <h3>Convert Image</h3>
           <p>Auto-detects WEBP, PNG, JPG, GIF and converts them instantly.</p>
         </Link>
+        
+        <Link to="/img-to-pdf" className="tool-card">
+          <div className="tool-icon" style={{backgroundColor: '#E8F5E9', color: '#2E7D32'}}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          </div>
+          <h3>Image to PDF</h3>
+          <p>Combine multiple images into a single PDF document perfectly.</p>
+        </Link>
+
+        <Link to="/pdf-to-img" className="tool-card">
+          <div className="tool-icon" style={{backgroundColor: '#FFEBEE', color: '#C62828'}}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="10" cy="13" r="2"></circle><path d="M20 17l-5-5-2 2"></path></svg>
+          </div>
+          <h3>PDF to Image</h3>
+          <p>Extract all pages of a PDF into high-quality JPGs inside a ZIP.</p>
+        </Link>
       </div>
     </div>
   );
