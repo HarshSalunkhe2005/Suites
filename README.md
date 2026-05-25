@@ -1,6 +1,6 @@
 # Suites.
 
-![Suites. Logo](./public/logo.png)
+<img src="./public/banner.png" alt="Suites. Banner" width="100%" />
 
 **Suites.** is a blazing-fast, strictly offline-first toolkit for manipulating Images and PDFs directly in your browser. 
 No data ever leaves your device—everything is processed locally using WebAssembly and Canvas APIs.
