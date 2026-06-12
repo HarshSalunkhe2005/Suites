@@ -6,6 +6,8 @@ import ImageCropper from './components/ImageCropper';
 import ImageConverter from './components/ImageConverter';
 import ImageToPdf from './components/ImageToPdf';
 import PdfToImage from './components/PdfToImage';
+import PdfCompressor from './components/PdfCompressor';
+import PdfMerger from './components/PdfMerger';
 
 function App() {
   return (
@@ -17,11 +19,24 @@ function App() {
             <h1 className="logo">Suites.</h1>
           </Link>
           <nav className="main-nav">
-            <Link to="/compress" className="nav-link">Compress IMAGE</Link>
-            <Link to="/crop" className="nav-link">Crop IMAGE</Link>
-            <Link to="/convert" className="nav-link">Convert to JPG</Link>
-            <Link to="/img-to-pdf" className="nav-link">IMG to PDF</Link>
-            <Link to="/pdf-to-img" className="nav-link">PDF to IMG</Link>
+            <div className="nav-dropdown">
+              <button className="nav-dropbtn">Image Tools ▼</button>
+              <div className="nav-dropdown-content">
+                <Link to="/compress" className="nav-link">Compress Image</Link>
+                <Link to="/crop" className="nav-link">Crop Image</Link>
+                <Link to="/convert" className="nav-link">Convert Format</Link>
+              </div>
+            </div>
+            
+            <div className="nav-dropdown">
+              <button className="nav-dropbtn">PDF Tools ▼</button>
+              <div className="nav-dropdown-content">
+                <Link to="/pdf-compress" className="nav-link">Compress PDF</Link>
+                <Link to="/pdf-merge" className="nav-link">Merge PDFs</Link>
+                <Link to="/img-to-pdf" className="nav-link">Image to PDF</Link>
+                <Link to="/pdf-to-img" className="nav-link">PDF to Image</Link>
+              </div>
+            </div>
           </nav>
         </div>
       </header>
@@ -35,6 +50,8 @@ function App() {
             <Route path="/convert" element={<ImageConverter />} />
             <Route path="/img-to-pdf" element={<ImageToPdf />} />
             <Route path="/pdf-to-img" element={<PdfToImage />} />
+            <Route path="/pdf-compress" element={<PdfCompressor />} />
+            <Route path="/pdf-merge" element={<PdfMerger />} />
           </Routes>
         </div>
       </main>
