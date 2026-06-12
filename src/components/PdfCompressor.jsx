@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { compressBalanced, compressLossless, compressMax } from '@quicktoolsone/pdf-compress';
 import * as pdfjsLib from 'pdfjs-dist';
 import '../App.css';
+import './ImageResizer.css';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
@@ -19,6 +20,7 @@ const PdfCompressor = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -80,51 +82,55 @@ const PdfCompressor = () => {
   };
 
   return (
-    <div className="tool-container">
+    <div className="card image-resizer">
       <h2>Compress PDF</h2>
-      <p className="tool-desc">Reduce your PDF file size without losing quality. Works 100% offline.</p>
+      <p className="subtitle">Reduce your PDF file size without losing quality. Works 100% offline.</p>
       
       {!file && (
         <div 
-          className="drop-zone"
+          className="dropzone"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
+          onClick={() => fileInputRef.current.click()}
         >
           <input 
             type="file" 
-            id="file-upload" 
             accept="application/pdf" 
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
+            hidden 
+            ref={fileInputRef} 
+            onChange={handleFileChange} 
           />
-          <label htmlFor="file-upload" className="upload-btn">
-            Choose PDF
-          </label>
-          <p>or drag and drop here</p>
+          <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p>Drag & Drop a PDF here or click to select</p>
         </div>
       )}
 
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="error-message" style={{color: 'red', marginTop: '1rem'}}>{error}</p>}
 
       {file && !result && (
-        <div className="processing-section">
+        <div className="workspace">
           <div className="file-info">
-            <span className="file-name">{file.name}</span>
-            <span className="file-size">{formatSize(file.size)}</span>
+            <strong>Selected:</strong> {file.name} ({formatSize(file.size)})
           </div>
           
-          <div className="options-group" style={{marginTop: '1rem', marginBottom: '1rem'}}>
-            <label style={{marginRight: '1rem', fontWeight: 600}}>Compression Level:</label>
-            <select value={level} onChange={(e) => setLevel(e.target.value)} style={{padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc'}}>
-              <option value="lossless">Lossless (Best Quality)</option>
-              <option value="balanced">Balanced (Recommended)</option>
-              <option value="max">Max (Smallest File)</option>
-            </select>
+          <div className="controls">
+            <div className="control-group">
+              <label>Compression Level:</label>
+              <select className="dropdown" value={level} onChange={(e) => setLevel(e.target.value)}>
+                <option value="lossless">Lossless (Best Quality)</option>
+                <option value="balanced">Balanced (Recommended)</option>
+                <option value="max">Max (Smallest File)</option>
+              </select>
+            </div>
           </div>
 
-          <div className="action-buttons">
-            <button onClick={() => setFile(null)} className="btn-secondary" disabled={loading}>Cancel</button>
-            <button onClick={processCompression} className="btn-primary" disabled={loading}>
+          <div className="actions">
+            <button onClick={() => setFile(null)} className="btn btn-secondary" disabled={loading}>Cancel</button>
+            <button onClick={processCompression} className="btn btn-primary" disabled={loading}>
               {loading ? 'Compressing...' : 'Compress PDF'}
             </button>
           </div>
@@ -132,10 +138,10 @@ const PdfCompressor = () => {
       )}
 
       {result && (
-        <div className="result-section">
-          <div className="success-banner" style={{padding: '1.5rem', backgroundColor: '#ecfdf5', borderRadius: '8px', border: '1px solid #d1fae5', marginBottom: '2rem'}}>
-            <h3 style={{color: '#065f46', marginTop: 0}}>Compression Complete! 🎉</h3>
-            <div className="stats-row" style={{display: 'flex', gap: '2rem', marginTop: '1rem'}}>
+        <div className="workspace">
+          <div className="success-banner" style={{padding: '1.5rem', backgroundColor: '#ecfdf5', borderRadius: '8px', border: '1px solid #d1fae5'}}>
+            <h3 style={{color: '#065f46', marginTop: 0, marginBottom: '1rem'}}>Compression Complete! 🎉</h3>
+            <div className="stats-row" style={{display: 'flex', gap: '2rem'}}>
               <div className="stat-box">
                 <span className="stat-label" style={{display: 'block', fontSize: '0.85rem', color: '#064e3b', fontWeight: 600}}>Original</span>
                 <span className="stat-value" style={{fontSize: '1.25rem', fontWeight: 700}}>{formatSize(result.originalSize)}</span>
@@ -150,11 +156,11 @@ const PdfCompressor = () => {
               </div>
             </div>
           </div>
-          <div className="action-buttons">
-            <a href={result.url} download={`compressed_${file.name}`} className="btn-primary" style={{textDecoration: 'none', display: 'inline-block'}}>
+          <div className="actions">
+            <a href={result.url} download={`compressed_${file.name}`} className="btn btn-primary" style={{textDecoration: 'none'}}>
               Download PDF
             </a>
-            <button onClick={() => { setFile(null); setResult(null); }} className="btn-secondary">
+            <button onClick={() => { setFile(null); setResult(null); }} className="btn btn-secondary">
               Compress Another
             </button>
           </div>

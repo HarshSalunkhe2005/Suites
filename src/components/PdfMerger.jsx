@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import '../App.css';
+import './ImageResizer.css';
 
 const formatSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
@@ -15,6 +16,7 @@ const PdfMerger = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files).filter(f => f.type === 'application/pdf');
@@ -103,37 +105,39 @@ const PdfMerger = () => {
   };
 
   return (
-    <div className="tool-container">
+    <div className="card image-resizer">
       <h2>Merge PDFs</h2>
-      <p className="tool-desc">Combine multiple PDF files into one single document instantly. 100% offline.</p>
+      <p className="subtitle">Combine multiple PDF files into one single document instantly. 100% offline.</p>
       
       <div 
-        className="drop-zone"
+        className="dropzone"
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
-        style={{ marginBottom: '2rem', padding: '1.5rem' }}
+        onClick={() => fileInputRef.current.click()}
       >
         <input 
           type="file" 
-          id="file-upload" 
           accept="application/pdf" 
           multiple
+          hidden
+          ref={fileInputRef}
           onChange={handleFileChange}
-          style={{ display: 'none' }}
         />
-        <label htmlFor="file-upload" className="upload-btn">
-          Add PDFs
-        </label>
-        <p style={{marginTop: '0.5rem', marginBottom: 0}}>or drag and drop here</p>
+        <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <p>Drag & Drop PDFs here or click to select</p>
       </div>
 
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="error-message" style={{color: 'red', marginTop: '1rem'}}>{error}</p>}
 
       {files.length > 0 && !result && (
-        <div className="processing-section">
+        <div className="workspace" style={{marginTop: '1.5rem'}}>
           <h3 style={{marginBottom: '1rem'}}>Files to Merge ({files.length})</h3>
           
-          <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem'}}>
+          <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem'}}>
             {files.map((file, index) => (
               <div key={index} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px'}}>
                 <div style={{display: 'flex', alignItems: 'center', overflow: 'hidden'}}>
@@ -145,34 +149,34 @@ const PdfMerger = () => {
                 <div style={{display: 'flex', gap: '0.5rem'}}>
                   <button onClick={() => moveUp(index)} disabled={index === 0} style={{padding: '0.25rem 0.5rem', cursor: index === 0 ? 'not-allowed' : 'pointer'}}>↑</button>
                   <button onClick={() => moveDown(index)} disabled={index === files.length - 1} style={{padding: '0.25rem 0.5rem', cursor: index === files.length - 1 ? 'not-allowed' : 'pointer'}}>↓</button>
-                  <button onClick={() => removeFile(index)} style={{padding: '0.25rem 0.5rem', color: 'red', cursor: 'pointer', marginLeft: '0.5rem'}}>✕</button>
+                  <button onClick={() => removeFile(index)} style={{padding: '0.25rem 0.5rem', color: 'red', cursor: 'pointer', marginLeft: '0.5rem', border: 'none', background: 'none'}}>✕</button>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="action-buttons">
-            <button onClick={() => setFiles([])} className="btn-secondary" disabled={loading}>Clear All</button>
-            <button onClick={processMerge} className="btn-primary" disabled={loading || files.length < 2}>
+          <div className="actions">
+            <button onClick={() => setFiles([])} className="btn btn-secondary" disabled={loading}>Clear All</button>
+            <button onClick={processMerge} className="btn btn-primary" disabled={loading || files.length < 2}>
               {loading ? 'Merging...' : 'Merge PDFs'}
             </button>
           </div>
-          {files.length < 2 && <p style={{fontSize: '0.85rem', color: '#64748b', textAlign: 'center', marginTop: '0.5rem'}}>Need at least 2 files to merge.</p>}
+          {files.length < 2 && <p style={{fontSize: '0.85rem', color: '#64748b', textAlign: 'left', marginTop: '0.5rem'}}>Need at least 2 files to merge.</p>}
         </div>
       )}
 
       {result && (
-        <div className="result-section">
-          <div className="success-banner" style={{padding: '1.5rem', backgroundColor: '#ecfdf5', borderRadius: '8px', border: '1px solid #d1fae5', marginBottom: '2rem'}}>
-            <h3 style={{color: '#065f46', marginTop: 0}}>Merge Complete! 🎉</h3>
+        <div className="workspace" style={{marginTop: '1.5rem'}}>
+          <div className="success-banner" style={{padding: '1.5rem', backgroundColor: '#ecfdf5', borderRadius: '8px', border: '1px solid #d1fae5', marginBottom: '1rem'}}>
+            <h3 style={{color: '#065f46', marginTop: 0, marginBottom: '0.5rem'}}>Merge Complete! 🎉</h3>
             <p style={{color: '#064e3b'}}>Successfully combined {files.length} files into a single {result.pageCount}-page document.</p>
-            <p style={{color: '#064e3b', fontWeight: 600}}>Final Size: {formatSize(result.size)}</p>
+            <p style={{color: '#064e3b', fontWeight: 600, marginTop: '0.5rem'}}>Final Size: {formatSize(result.size)}</p>
           </div>
-          <div className="action-buttons">
-            <a href={result.url} download="merged_document.pdf" className="btn-primary" style={{textDecoration: 'none', display: 'inline-block'}}>
+          <div className="actions">
+            <a href={result.url} download="merged_document.pdf" className="btn btn-primary" style={{textDecoration: 'none'}}>
               Download Merged PDF
             </a>
-            <button onClick={() => { setFiles([]); setResult(null); }} className="btn-secondary">
+            <button onClick={() => { setFiles([]); setResult(null); }} className="btn btn-secondary">
               Merge More PDFs
             </button>
           </div>
