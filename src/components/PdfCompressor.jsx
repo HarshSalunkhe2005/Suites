@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { compressBalanced, compressLossless, compressMax } from '@quicktoolsone/pdf-compress';
+import * as pdfjsLib from 'pdfjs-dist';
 import '../App.css';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 const formatSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
@@ -48,15 +51,14 @@ const PdfCompressor = () => {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
       
       let compressedBytes;
       if (level === 'lossless') {
-        compressedBytes = await compressLossless(uint8Array);
+        compressedBytes = await compressLossless(arrayBuffer);
       } else if (level === 'max') {
-        compressedBytes = await compressMax(uint8Array);
+        compressedBytes = await compressMax(arrayBuffer);
       } else {
-        compressedBytes = await compressBalanced(uint8Array);
+        compressedBytes = await compressBalanced(arrayBuffer);
       }
       
       const blob = new Blob([compressedBytes], { type: 'application/pdf' });
