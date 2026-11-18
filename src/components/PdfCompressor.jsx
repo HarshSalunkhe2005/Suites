@@ -54,16 +54,21 @@ const PdfCompressor = () => {
     try {
       const arrayBuffer = await file.arrayBuffer();
       
-      let compressedBytes;
+      // The library resolves to { pdf: ArrayBuffer, stats }, not raw bytes.
+      // Its image path uses its own bundled pdfjs (4.10.38) with the worker at
+      // /pdf.js/pdf.worker.min.mjs, so that file in public/ must match that version.
+      let compressed;
       if (level === 'lossless') {
-        compressedBytes = await compressLossless(arrayBuffer);
+        compressed = await compressLossless(arrayBuffer);
       } else if (level === 'max') {
-        compressedBytes = await compressMax(arrayBuffer);
+        compressed = await compressMax(arrayBuffer);
       } else {
-        compressedBytes = await compressBalanced(arrayBuffer);
+        compressed = await compressBalanced(arrayBuffer);
       }
-      
-      const blob = new Blob([compressedBytes], { type: 'application/pdf' });
+
+      // Never hand back a file bigger than the original.
+      const output = compressed.pdf.byteLength < file.size ? compressed.pdf : arrayBuffer;
+      const blob = new Blob([output], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       
       setResult({
